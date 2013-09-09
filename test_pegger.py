@@ -977,3 +977,10 @@ def test_get_indented_lines():
 
     for indent, data, expected in items:
         yield do_test, indent, data, expected
+
+def test_deep_bool():
+    assert not pg._deep_bool([''])
+    assert not pg._deep_bool({'':''})
+    assert not pg._deep_bool(('', ''))
+    assert pg._deep_bool([[1]])
+    assert pg._deep_bool(['', 'b'])

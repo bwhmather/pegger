@@ -3,8 +3,6 @@
 import string
 import cgi
 
-import utils
-
 
 class NoPatternFound(Exception):
     pass
@@ -164,7 +162,7 @@ def match_one_of(text, pattern, name):
         try:
             match, rest = do_parse(text, sub_pattern)
             result = [name]
-            if utils.deep_bool(match):
+            if _deep_bool(match):
                 _add_match_to_result(result, match)
             else:
                 result.append("")
@@ -230,7 +228,7 @@ def match_many(text, pattern, name):
             try:
                 match, rest = do_parse(rest, sub_pattern)
                 match_made = True
-                if utils.deep_bool(match):
+                if _deep_bool(match):
                     _add_match_to_result(result, match)
                 break
             except NoPatternFound:
@@ -351,6 +349,15 @@ def _add_match_to_result(result, match):
         result.extend(match[1:])
     else:
         result.append(match)
+
+def _deep_bool(data):
+    for item in data:
+        try:
+            if _deep_bool(item):
+                return True
+        except TypeError:
+            return bool(item)
+    return False
 
 matchers = {
     str: match_text,
